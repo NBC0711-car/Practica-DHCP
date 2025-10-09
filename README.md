@@ -28,3 +28,13 @@ Sets the hostname inside the guest operating system, which helps identify the ma
 Creates two private network interfaces.
 Private networks in Vagrant allow communication between the virtual machine and the host, or between multiple VMs, without external Internet access.
 Each interface is assigned a static IP address, which is useful when configuring the DHCP service later.
+
+This Vagrant setup creates two virtual machines called c1 and c2. Both are connected to a private internal network that uses DHCP to hand out IP addresses. The first one gets a random IP each time, and the second one always gets the same IP because it has a fixed MAC address.
+
+The line config.vm.define "c1" do |c1| starts the setup for the first virtual machine, named c1. Inside that block, c1.vm.hostname = "c1" sets the name the machine will use inside its operating system. Then, c1.vm.network "private_network", type: "dhcp", virtualbox__intnet: "dhcp-internal" connects it to a private internal network called dhcp-internal. The “type: dhcp” part means the machine will ask for an IP address automatically when it starts up. This lets different VMs on the same network talk to each other without needing internet access. The word end just marks the end of the configuration for that VM.
+
+After that, config.vm.define "c2" do |c2| starts the setup for the second virtual machine. Like before, c2.vm.hostname = "c2" gives it a name inside the guest OS. It connects to the same private network with c2.vm.network "private_network", type: "dhcp", virtualbox__intnet: "dhcp-internal". But this one has an extra line: c2.vm.base_mac = "080027112233". That fixed MAC address tells the DHCP server to always assign this machine the same IP address, instead of a random one. This is how you can make sure a VM always gets the same IP even when using DHCP. The end closes this block too.
+
+Finally, there’s one last end that closes the main Vagrant.configure block that wraps everything. Every VM definition has to go inside that main block so Vagrant knows what to create and configure.
+
+In short, c1 gets a dynamic IP and c2 gets a fixed IP thanks to its MAC address. This kind of setup is great when you want to test a small internal network where some machines have static addresses and others just grab one automatically.
