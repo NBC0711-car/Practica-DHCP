@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
   end
   config.v,.define "c2" do |c2|
     c2.vm.hostname = "c2"
-    c2.vm.network "private_network" type: "dhcp"
+    c2.vm.network "private_network" type: "dhcp" # IMPORTANT: The MAC address must be specified for 'c2' so the DHCP server can recognize it and assign the fixed IP (192.168.57.4)
+    c2.vm.base_mac = "080027112233" #Use this value in dhcp.conf 
   end
 end
