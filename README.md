@@ -38,3 +38,5 @@ After that, config.vm.define "c2" do |c2| starts the setup for the second virtua
 Finally, there’s one last end that closes the main Vagrant.configure block that wraps everything. Every VM definition has to go inside that main block so Vagrant knows what to create and configure.
 
 In short, c1 gets a dynamic IP and c2 gets a fixed IP thanks to its MAC address. This kind of setup is great when you want to test a small internal network where some machines have static addresses and others just grab one automatically.
+
+Step 1 – Check Vagrant Environment Status. Run the command vagrant status to see the state of all virtual machines defined in the Vagrantfile. The result shows that “practice” is running in VirtualBox, while “c1” and “c2” are not created yet. This means only the main VM is active, and the other two have not been initialized. This step helps confirm which machines are currently running before continuing with the setup.
