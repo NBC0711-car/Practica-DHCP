@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+  practice.vm.network "private_network", ip: "192.168.56.10"
+  config.vm.synced_folder "./ansible", "/vagrant/ansible"
+  config.vm.define "practice" do |practice|
+      practice.vm.hostname = "dhcp"
+      practice.vm.network "private_network", ip: "192.168.57.10", virtualbox__intnet: "dhcp-internal" 
+      dhcp.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/playbook-dhcp.yml"
+        ansible.inventory_path = "ansible/inventory.ini"
+        ansible.limit = "dhcp_server"
+        ansible.verbose = "v"
+      end
+    end #end practice
+  
+
+  
+  config.vm.define "c1" do |c1|
+    c1.vm.hostname = "c1" 
+    c1.vm.provision "shell", path: "provision-client.sh"
+    c1.vm.network "private_network", type: "dhcp", virtualbox__intnet: "dhcp-internal"
+    c1.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/playbook-clients.yml"
+      ansible.inventory_path = "ansible/inventory.ini"
+      ansible.limit = "clients"
+      ansible.verbose = "v"
+    end
+  end # end c1
+  
+  config.vm.define "c2" do |c2|
+    c2.vm.hostname = "c2"
+    c2.vm.network "private_network", type: "dhcp", virtualbox__intnet: "dhcp-internal"
+    c2.vm.base_mac = "080027112233"
+    c2.vm.provision "shell", path: "provision-client.sh"
+    c2.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/playbook-clients.yml"
+      ansible.inventory_path = "ansible/inventory.ini"
+      ansible.limit = "clients"
+      ansible.verbose = "v"
+    end
+  end # end c2
+end # end configuration
