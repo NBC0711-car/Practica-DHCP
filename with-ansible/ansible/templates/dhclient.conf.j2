@@ -1,0 +1,5 @@
+timeout 60;
+send host-name = gethostname();
+request subnet-mask, broadcast-address, time-offset, routers, domain-name, domain-name-servers, host-name;
+retry 60;
+supersede domain-name-servers 8.8.8.8, 1.1.1.1;
