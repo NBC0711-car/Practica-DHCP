@@ -10,7 +10,7 @@ subnet 192.168.57.0 netmask 255.255.255.0 {
   range 192.168.57.100 192.168.57.200;
   option routers 192.168.57.21;
   option subnet-mask 255.255.255.0;
-  option domain-name-servers 8.8.8.8 1.1.1.1;
+  option domain-name-servers 8.8.8.8 4.4.4.4;
   option domain-name "micasa.local";
   default-lease-time 3600;
   max-lease-time 7200;
