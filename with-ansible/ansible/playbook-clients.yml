@@ -1,0 +1,22 @@
+---
+- name: Configurar clientes DHCP
+  hosts: clients
+  become: yes
+  tasks:
+    - name: Instalar cliente DHCP
+      apt:
+        name: isc-dhcp-client
+        state: present
+        update_cache: yes
+
+    - name: Configurar dhclient.conf desde plantilla
+      template:
+        src: templates/dhclient.conf.j2
+        dest: /etc/dhcp/dhclient.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reiniciar cliente DHCP
+      command: dhclient -r && dhclient -v
+      ignore_errors: yes
